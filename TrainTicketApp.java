@@ -99,7 +99,7 @@ public class TrainTicketApp {
             throw new IllegalArgumentException("User '" + userName + "' not found. Cannot modify seat.");
         }
 
-        // Create a new ticket with the modified seat section
+        // Creating a new ticket with the modified seat section
         TrainTicket modifiedTicket = new TrainTicket(existingTicket, newSeatSection);
         tickets.put(userName, modifiedTicket);
     }
@@ -121,7 +121,6 @@ public class TrainTicketApp {
 
     public static void main(String[] args) {
         try {
-            // Example
             purchaseTicket("London", "France", "John Doe", "john.doe@example.com", 20.0, "A");
             System.out.println(getReceiptDetails("John Doe"));
 
