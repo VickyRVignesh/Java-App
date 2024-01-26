@@ -132,7 +132,6 @@ public class TrainTicketApp {
     }
 
     private static String assignSeatSection() {
-        // Simple logic to alternate between section A and B
         return tickets.size() % 2 == 0 ? "A" : "B";
     }
 }
