@@ -19,6 +19,12 @@ class TrainTicket {
         this.seatSection = seatSection;
     }
 
+    // Constructor to copy values from an existing ticket
+    TrainTicket(TrainTicket existingTicket, String newSeatSection) {
+        this(existingTicket.from, existingTicket.to, existingTicket.userName,
+                existingTicket.userEmail, existingTicket.price, newSeatSection);
+    }
+
     String getUserName() {
         return userName;
     }
@@ -88,12 +94,14 @@ public class TrainTicketApp {
     public static void modifyUserSeat(String userName, String newSeatSection) {
         validateUserName(userName);
 
-        TrainTicket ticket = tickets.get(userName);
-        if (ticket == null) {
+        TrainTicket existingTicket = tickets.get(userName);
+        if (existingTicket == null) {
             throw new IllegalArgumentException("User '" + userName + "' not found. Cannot modify seat.");
         }
-        ticket = new TrainTicket(ticket.from, ticket.to, ticket.userName, ticket.userEmail, ticket.price, newSeatSection);
-        tickets.put(userName, ticket);
+
+        // Create a new ticket with the modified seat section
+        TrainTicket modifiedTicket = new TrainTicket(existingTicket, newSeatSection);
+        tickets.put(userName, modifiedTicket);
     }
 
     private static void validatePurchaseInput(String userName, String userEmail, double price) {
@@ -113,6 +121,7 @@ public class TrainTicketApp {
 
     public static void main(String[] args) {
         try {
+            // Example
             purchaseTicket("London", "France", "John Doe", "john.doe@example.com", 20.0, "A");
             System.out.println(getReceiptDetails("John Doe"));
 
