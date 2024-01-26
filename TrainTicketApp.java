@@ -19,18 +19,32 @@ class TrainTicket {
         this.seatSection = seatSection;
     }
 
-    // Constructor to copy values from an existing ticket
-    TrainTicket(TrainTicket existingTicket, String newSeatSection) {
-        this(existingTicket.from, existingTicket.to, existingTicket.userName,
-                existingTicket.userEmail, existingTicket.price, newSeatSection);
+    String getFrom() {
+        return from;
+    }
+
+    String getTo() {
+        return to;
     }
 
     String getUserName() {
         return userName;
     }
 
+    String getUserEmail() {
+        return userEmail;
+    }
+
+    double getPrice() {
+        return price;
+    }
+
     String getSeatSection() {
         return seatSection;
+    }
+
+    void setSeatSection(String newSeatSection) {
+        this.seatSection = newSeatSection;
     }
 
     @Override
@@ -49,13 +63,14 @@ class TrainTicket {
 public class TrainTicketApp {
     private static Map<String, TrainTicket> tickets = new HashMap<>();
 
-    public static void purchaseTicket(String from, String to, String userName, String userEmail, double price, String seatSection) {
+    public static void purchaseTicket(String from, String to, String userName, String userEmail, double price) {
         validatePurchaseInput(userName, userEmail, price);
 
         if (tickets.containsKey(userName)) {
             throw new IllegalStateException("User '" + userName + "' already has a ticket. Cannot purchase another.");
         }
 
+        String seatSection = assignSeatSection();
         TrainTicket ticket = new TrainTicket(from, to, userName, userEmail, price, seatSection);
         tickets.put(userName, ticket);
     }
@@ -94,14 +109,11 @@ public class TrainTicketApp {
     public static void modifyUserSeat(String userName, String newSeatSection) {
         validateUserName(userName);
 
-        TrainTicket existingTicket = tickets.get(userName);
-        if (existingTicket == null) {
+        TrainTicket ticket = tickets.get(userName);
+        if (ticket == null) {
             throw new IllegalArgumentException("User '" + userName + "' not found. Cannot modify seat.");
         }
-
-        // Creating a new ticket with the modified seat section
-        TrainTicket modifiedTicket = new TrainTicket(existingTicket, newSeatSection);
-        tickets.put(userName, modifiedTicket);
+        ticket.setSeatSection(newSeatSection);
     }
 
     private static void validatePurchaseInput(String userName, String userEmail, double price) {
@@ -119,21 +131,8 @@ public class TrainTicketApp {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            purchaseTicket("London", "France", "John Doe", "john.doe@example.com", 20.0, "A");
-            System.out.println(getReceiptDetails("John Doe"));
-
-            purchaseTicket("London", "France", "Jane Doe", "jane.doe@example.com", 20.0, "B");
-            System.out.println(getUsersBySection("B"));
-
-            modifyUserSeat("John Doe", "B");
-            System.out.println(getUsersBySection("A"));
-
-            removeUser("Jane Doe");
-            System.out.println(getReceiptDetails("Jane Doe"));
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+    private static String assignSeatSection() {
+        // Simple logic to alternate between section A and B
+        return tickets.size() % 2 == 0 ? "A" : "B";
     }
 }
